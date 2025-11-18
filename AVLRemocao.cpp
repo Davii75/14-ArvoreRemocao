@@ -182,8 +182,6 @@ NO* girarDireita(NO* y) {
 
 	// Retorna o novo nó raiz
 	return x;
-
-
 }  
 
 NO* girarEsquerda(NO* x) 
@@ -279,19 +277,32 @@ NO* removerArvore(NO* no, int valor) {
         /* ========== CASO 1: Nó sem filhos (Folha) ========== */
         // Condição: verificar se ambos os ponteiros esquerdo e direito são NULL
         // Ação: libere a memória do nó e retorne NULL para o pai
-     
+        if (no->esq == NULL && no->dir == NULL) {
+            delete no;
+            return NULL;
+        }
         
         /* ========== CASO 2: Nó com apenas um filho ========== */
         // Subcaso 2a: Apenas filho direito existe (esquerda é NULL)
         // Condição: verificar se o ponteiro esquerdo é NULL
         // Ação: armazene o ponteiro do filho direito em uma variável temporária,
         //       libere o nó atual e retorne o ponteiro do filho direito
-        /
+        if (no->esq == NULL && no->dir != NULL) {
+            NO* temp = no->dir;
+            delete no;
+            return temp;
+        }
+        
         
         // Subcaso 2b: Apenas filho esquerdo existe (direita é NULL)
         // Condição: verificar se o ponteiro direito é NULL
         // Ação: armazene o ponteiro do filho esquerdo em uma variável temporária,
         //       libere o nó atual e retorne o ponteiro do filho esquerdo
+        if (no->esq != NULL && no->dir == NULL) {
+            NO* temp = no->esq;
+            delete no;
+            return temp;
+        }
             
         /* ========== CASO 3: Nó com dois filhos ========== */
         // Estratégia: Encontrar o sucessor (menor valor da subárvore direita)
@@ -310,7 +321,12 @@ NO* removerArvore(NO* no, int valor) {
         // - O sucessor terá no máximo um filho direito (nunca tem filho esquerdo)
         // - A remoção será tratada como Caso 1 ou Caso 2
       
-        
+        NO* sucessor = no->dir;
+        while (sucessor->esq != NULL) {
+            sucessor = sucessor->esq;
+        }
+        no->valor = sucessor->valor;
+        no->dir = removerArvore(no->dir, sucessor->valor);
         /* IMPLEMENTE OS TRÊS CASOS ACIMA */
     }
     
